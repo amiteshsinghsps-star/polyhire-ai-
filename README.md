@@ -7,6 +7,18 @@
 
 ---
 
+## 📸 Screenshots
+
+| | |
+|---|---|
+| ![3D Galaxy](Screenshots/3D%20Galaxy.png) | ![Shortlist](Screenshots/Shortlist.png) |
+| ![Enterprise](Screenshots/Enterprise.png) | ![Shield](Screenshots/Shield.png) |
+| ![DPDP And BIL Layer](Screenshots/DPDP%20And%20BIL%20layer.png) | ![Intent](Screenshots/Intent.png) |
+| ![Metrics](Screenshots/Metrics.png) | ![Skill Gaps](Screenshots/Skill%20gaps.png) |
+| ![Outcomes](Screenshots/Outcomes.png) | |
+
+---
+
 ## 🌟 1. The Core Submission: PolyHire Redrob
 Welcome to **PolyHire Redrob**, Team Xcution's flagship submission for Track 1. We didn't just build a wrapper around an LLM API; we engineered a **100% CPU-only, zero-dependency, mathematically rigorous AI hiring pipeline** capable of processing 100,000 candidates in under 2 minutes on a standard judge's laptop.
 
