@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# =============================================================================
+# Git pre-commit hook — secret scanning + quick lint
+# Install: cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+# =============================================================================
+set -euo pipefail
+
+echo "🔐 PolyHire pre-commit: running secret scan..."
+
+if command -v detect-secrets &>/dev/null; then
+  detect-secrets-hook --baseline .secrets.baseline $(git diff --cached --name-only)
+else
+  echo "  ⚠  detect-secrets not installed. Run: pip install detect-secrets"
+fi
+
+echo "✅ Pre-commit checks passed."

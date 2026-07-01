@@ -1,0 +1,29 @@
+team_name: "Xcution"
+project_name: "PolyHire AI v3.0"
+track: "Redrob AI — Intelligent Candidate Discovery & Ranking"
+submission_date: "2026-06-28"
+
+github_repo: "https://github.com/team-xcution/polyhire-ai"
+sandbox_link: "https://polyhire-redrob.streamlit.app"
+reproduce_command: "python rank.py --candidates ./data/candidates.jsonl --out ./submission.csv"
+
+compute:
+  uses_gpu_for_inference: false
+  has_network_during_ranking: false
+  reference_runtime_seconds: 120
+  reference_ram_gb: 8
+
+ai_tools_used:
+  - "Cursor AI (development assistance only)"
+  - "sentence-transformers/all-MiniLM-L6-v2 (Phase A precompute only, not in ranking path)"
+
+ai_usage_summary: >
+  AI-assisted IDE used for code authoring. Ranking step (rank.py) uses zero LLM API calls,
+  zero GPU, and zero network. Optional Phase A precompute uses local sentence-transformers on CPU.
+
+methodology_summary: >
+  Two-phase architecture: Phase A precomputes embeddings offline; Phase B (rank.py) loads flat
+  artifacts and scores 100K candidates via a 5-component fusion ranker (skill match, role
+  relevance, experience fit, location logistics, negative filters) with multiplicative behavioral
+  and Bharat Intelligence Layer adjustments. Honeypots are hard-excluded pre-ranking. Reasoning
+  is template-grounded from actual profile fields.

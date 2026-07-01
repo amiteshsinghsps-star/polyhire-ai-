@@ -1,0 +1,34 @@
+# ── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# ── Test / coverage artifacts ─────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# ── pip temp / wheel cache ────────────────────────────────
+pip_tmp/
+pip_hash_tmp/
+*.whl
+
+# ── Runtime audit logs (generated on each rank.py run) ────
+audit_report_*.jsonl
+
+# ── Embeddings (large, pre-computed, stored separately) ───
+data/candidate_embeddings.npy
+data/jd_statement_embeddings.npy
+data/candidate_id_order.json
+
+# ── The 465 MB dataset (too large for git) ────────────────
+data/bharat/candidates.jsonl
+
+# ── Editor / OS ───────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp

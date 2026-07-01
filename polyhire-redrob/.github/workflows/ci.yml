@@ -1,0 +1,27 @@
+name: PolyHire Redrob CI
+on:
+  push:
+    paths:
+      - "polyhire-redrob/**"
+  pull_request:
+    paths:
+      - "polyhire-redrob/**"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: polyhire-redrob
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt pytest
+      - run: pytest tests/unit tests/integration tests/fairness -v
+      - name: Compute-budget smoke test (mini pool)
+        run: python scripts/smoke_rank.py
+      - name: No-GPU / no-network static check
+        run: |
+          ! grep -rn "cuda\|torch.cuda\|\.to('cuda')" rank.py polyhire/ || (echo "GPU usage detected" && exit 1)
+          ! grep -rn "^import requests\|^import httpx\|openai\.\|anthropic\." rank.py polyhire/ || (echo "network/LLM call detected" && exit 1)

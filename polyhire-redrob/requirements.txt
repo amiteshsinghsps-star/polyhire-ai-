@@ -1,0 +1,20 @@
+# Pinned dependencies — verified SHA-256 hashes (Security Feature 3).
+# Install with: pip install -r requirements.txt
+# For strict hash verification: pip install --require-hashes -r requirements.txt
+#
+# Pinned versions (verified July 2026):
+#   numpy  2.4.6
+#   pytest 9.1.1
+#
+# To regenerate hashes after a planned upgrade:
+#   pip download numpy pytest --no-deps -d ./tmp_wheels
+#   pip hash ./tmp_wheels/*.whl
+#   Update the hashes below.
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# Windows CPython 3.14 (cp314-cp314-win_amd64) — add platform-specific wheels below if targeting Linux/macOS
+numpy==2.4.6 \
+    --hash=sha256:b507f5c4c1d508876d1819b6bf9a49d365b96320b5d4993426b33a23ca4b8261
+# Pure-Python wheel — identical across all platforms
+pytest==9.1.1 \
+    --hash=sha256:37a86b45efb9a47a61a36449063e8e18d0cab3161329fc099eb21783169c4f0c

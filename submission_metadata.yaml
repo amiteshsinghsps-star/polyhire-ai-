@@ -1,0 +1,19 @@
+team_name: "Xcution"
+project_name: "PolyHire AI v3.0 (Redrob Submission)"
+track: "Redrob AI — Intelligent Candidate Discovery & Ranking"
+submission_date: "2026-06-28"
+
+submission_path: "polyhire-redrob/"
+reproduce_command: "cd polyhire-redrob && python rank.py --candidates ./data/candidates.jsonl --out ./submission.csv"
+
+technical_details:
+  architecture: "Phase A/B — offline embeddings + modular fusion ranker (CPU-only Phase B)"
+  framework: "Python 3.11 + numpy"
+  deployment: "Docker (polyhire-redrob/Dockerfile)"
+
+constraints_met:
+  uses_gpu_for_inference: false
+  has_network_during_ranking: false
+  cpu_only_ranking: true
+  under_5_min_100k: true
+  under_16gb_ram: true

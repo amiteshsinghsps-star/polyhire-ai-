@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-void text-primary font-body;
+    background-image:
+      radial-gradient(circle at 12% 18%, rgba(232, 163, 61, 0.08), transparent 42%),
+      radial-gradient(circle at 88% 82%, rgba(79, 209, 197, 0.06), transparent 48%);
+    background-attachment: fixed;
+  }
+  ::selection {
+    @apply bg-starlight/30 text-primary;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply rounded-2xl border border-gridline/70 bg-surface/80 backdrop-blur-md;
+  }
+  .panel-header {
+    @apply border-b border-gridline/60 px-5 py-3;
+  }
+  .mono {
+    @apply font-mono;
+  }
+  .starfield-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .starfield-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .starfield-scrollbar::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-gridline/80;
+  }
+  .starfield-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-starlight/60;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium;
+  }
+  .badge-trust {
+    @apply bg-trust/15 text-trust ring-1 ring-inset ring-trust/40;
+  }
+  .badge-alert {
+    @apply bg-alert/15 text-alert ring-1 ring-inset ring-alert/40;
+  }
+  .badge-neutral {
+    @apply bg-gridline/40 text-primary/70 ring-1 ring-inset ring-gridline/60;
+  }
+}

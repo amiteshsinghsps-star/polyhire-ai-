@@ -1,0 +1,49 @@
+# =============================================================================
+# PolyHire AI — Local Development Stack
+# One-command spin-up of ML service + gateway for judges.
+#   docker compose up -d            # starts gateway and ml-service
+#   pnpm dev:frontend               # run frontend
+# =============================================================================
+version: "3.9"
+
+services:
+
+  ml-service:
+    build:
+      context: ./services/ml-service
+      dockerfile: Dockerfile
+    container_name: polyhire-ml
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./services/ml-service:/app
+      - ./data:/app/data
+      - ./output:/app/output
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+  gateway:
+    build:
+      context: .
+      dockerfile: apps/gateway/Dockerfile
+    container_name: polyhire-gateway
+    env_file: .env
+    ports:
+      - "4000:4000"
+    depends_on:
+      - ml-service
+    environment:
+      ML_SERVICE_URL: http://ml-service:8000
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    container_name: polyhire-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - gateway
+    environment:
+      VITE_GATEWAY_URL: http://localhost:4000
+

@@ -1,0 +1,26 @@
+{
+  "name": "polyhire-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PolyHire AI — Intelligent Candidate Discovery Engine (Track 1 — India Runs by Redrob AI × Hack2Skill)",
+  "license": "MIT",
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "install:all": "pnpm install",
+    "dev": "pnpm --filter @polyhire/shared-types build && pnpm -r --parallel --stream run dev",
+    "build": "pnpm -r run build",
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "pnpm -r run lint",
+    "dev:frontend": "pnpm --filter @polyhire/frontend dev",
+    "dev:gateway": "pnpm --filter @polyhire/gateway dev",
+    "dev:ml": "cd services/ml-service && uvicorn app.main:app --reload --port 8000",
+    "clean": "pnpm -r exec rimraf dist node_modules .turbo"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.5",
+    "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

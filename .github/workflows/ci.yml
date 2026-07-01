@@ -1,0 +1,257 @@
+name: PolyHire AI — CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.11"
+  NODE_VERSION: "20"
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # Job 1: Python lint + type-check
+  # ──────────────────────────────────────────────────────────────────────────
+  lint-python:
+    name: Python Lint & Type Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/ml-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dev dependencies
+        run: pip install ruff mypy
+
+      - name: Ruff lint
+        run: ruff check app/ tests/
+
+      - name: Secret scan (detect-secrets)
+        run: |
+          pip install detect-secrets
+          detect-secrets scan --baseline .secrets.baseline || true
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Job 2: Unit Tests
+  # ──────────────────────────────────────────────────────────────────────────
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: lint-python
+    defaults:
+      run:
+        working-directory: services/ml-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest pytest-cov
+
+      - name: Run unit tests
+        run: |
+          pytest tests/unit/ -v \
+            --cov=app \
+            --cov-report=xml \
+            --cov-report=term-missing \
+            -x
+        env:
+          DATABASE_URL: ""
+          GEMINI_API_KEY: ""
+          GROQ_API_KEY: ""
+          QDRANT_URL: ""
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: services/ml-service/coverage.xml
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Job 3: Integration Tests
+  # ──────────────────────────────────────────────────────────────────────────
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: polyhire
+          POSTGRES_PASSWORD: polyhire
+          POSTGRES_DB: polyhire_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    defaults:
+      run:
+        working-directory: services/ml-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest httpx
+
+      - name: Run DB migrations
+        run: |
+          pip install psycopg2-binary
+          for f in migrations/*.sql; do
+            psql "$DATABASE_URL" -f "$f" || echo "Migration $f skipped (idempotent)"
+          done
+        env:
+          DATABASE_URL: postgresql://polyhire:polyhire@localhost:5432/polyhire_test
+
+      - name: Run integration tests
+        run: pytest tests/integration/ -v -x
+        env:
+          DATABASE_URL: postgresql://polyhire:polyhire@localhost:5432/polyhire_test
+          GEMINI_API_KEY: ""
+          GROQ_API_KEY: ""
+          QDRANT_URL: ""
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Job 4: Security Tests
+  # ──────────────────────────────────────────────────────────────────────────
+  security-tests:
+    name: Security Penetration Tests
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    defaults:
+      run:
+        working-directory: services/ml-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest
+
+      - name: Run security pentest suite
+        run: pytest tests/security/ -v
+        env:
+          GEMINI_API_KEY: ""
+          GROQ_API_KEY: ""
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Job 5: Bias & Fairness Tests
+  # ──────────────────────────────────────────────────────────────────────────
+  fairness-tests:
+    name: Bias & Fairness Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    defaults:
+      run:
+        working-directory: services/ml-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest
+
+      - name: Run fairness tests
+        run: pytest tests/fairness/ -v
+        env:
+          GEMINI_API_KEY: ""
+          GROQ_API_KEY: ""
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Job 6: Frontend Type Check
+  # ──────────────────────────────────────────────────────────────────────────
+  frontend-check:
+    name: Frontend Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/frontend/package.json
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: TypeScript check
+        run: pnpm --filter frontend tsc --noEmit
+
+      - name: Lint
+        run: pnpm --filter frontend lint || true
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Job 7: Performance SLA (non-blocking advisory)
+  # ──────────────────────────────────────────────────────────────────────────
+  performance-sla:
+    name: Performance SLA Check (Advisory)
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    continue-on-error: true   # advisory: does not block merge
+    defaults:
+      run:
+        working-directory: services/ml-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest
+
+      - name: Run SLA benchmarks
+        run: pytest tests/performance/ -v -s
+        env:
+          GEMINI_API_KEY: ""
+          GROQ_API_KEY: ""

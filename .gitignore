@@ -1,0 +1,72 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+.next/
+.turbo/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Models (downloaded, never committed — ~5.8GB)
+models/
+*.gguf
+*.bin
+*.safetensors
+
+# Output artifacts (generated at runtime)
+output/*.json
+
+# Data
+data/raw/
+data/processed/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Local DB
+*.sqlite
+*.db
+
+# Redrob dataset - too large for GitHub (465MB)
+polyhire-redrob/data/bharat/*.jsonl
+*.jsonl.gz
+
+# Actual dataset location (230MB, exceeds GitHub 100MB limit)
+polyhire-redrob/data/candidates.jsonl
+
+# Nested output directories (root-level rule didn't catch this one)
+services/ml-service/output/*.json
+
+tree.txt

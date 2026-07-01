@@ -1,0 +1,67 @@
+{
+  "round_tenure": {
+    "n_candidates": 100000,
+    "fully_round_pct": 0.075,
+    "mostly_round_pct": 0.075,
+    "mean_round_score": 0.2286,
+    "interpretation": "ORGANIC_PLAUSIBLE"
+  },
+  "inter_arrival": {
+    "n_transitions": 121579,
+    "zero_gap_pct": 0.2708,
+    "all_zero_gap_candidates_pct": 0.2054,
+    "most_common_gaps": [
+      {
+        "gap_months": 0,
+        "count": 32920
+      },
+      {
+        "gap_months": 2,
+        "count": 5158
+      },
+      {
+        "gap_months": 11,
+        "count": 5144
+      },
+      {
+        "gap_months": 10,
+        "count": 5140
+      },
+      {
+        "gap_months": 9,
+        "count": 5103
+      }
+    ],
+    "interpretation": "ORGANIC_PLAUSIBLE"
+  },
+  "benford_yoe": {
+    "n_values": 100000,
+    "chi2_statistic": 100126.6968,
+    "chi2_critical_p01": 20.09,
+    "benford_violated": true,
+    "observed_freq": {
+      "1": 0.0315,
+      "2": 0.0389,
+      "3": 0.1143,
+      "4": 0.212,
+      "5": 0.2214,
+      "6": 0.1865,
+      "7": 0.1072,
+      "8": 0.0559,
+      "9": 0.0323
+    },
+    "expected_freq": {
+      "1": 0.301,
+      "2": 0.1761,
+      "3": 0.1249,
+      "4": 0.0969,
+      "5": 0.0792,
+      "6": 0.0669,
+      "7": 0.058,
+      "8": 0.0512,
+      "9": 0.0458
+    },
+    "interpretation": "POPULATION_SYNTHETIC_SUSPECTED (chi2 > critical, dataset may be generated)"
+  },
+  "dataset_verdict": "DATASET_PARTIALLY_SUSPECT"
+}
