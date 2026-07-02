@@ -171,6 +171,8 @@ Because a massive 100K-candidate dataset lacks human-annotated ground truth labe
 
 > **Scope note:** Benchmarked via `eval/silver_label_eval.py` against heuristic silver-label ground truth (see §7.1), running the same `FusionRanker` fusion logic used in production `rank.py` vs. a TF-IDF baseline.
 
+> **Validity note:** The silver-label scorer (`eval/silver_label_eval.py`) is intentionally kept independent of the production ranker — it uses simple rule-based checks (title match, YoE bounds, skill-keyword overlap) rather than reusing any FusionRanker code or learned weights, so the benchmark is not just the model grading its own homework. That said, silver labels are a proxy for relevance, not human-annotated ground truth, so the reported nDCG/Recall gains should be read as *directional evidence* that semantic fusion beats lexical search, not as an absolute quality score. A held-out human-labeled sample would be the natural next validation step.
+
 | Metric | Target | PolyHire Pipeline | TF-IDF Baseline | Verdict |
 |---|---|---|---|---|
 | **nDCG@10** | ≥ +25% relative | **0.901** (+194% avg) | 0.306 | ✅ Target met (Huge improvement) |
