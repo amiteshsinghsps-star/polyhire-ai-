@@ -4,7 +4,7 @@ track: "Redrob AI — Intelligent Candidate Discovery & Ranking"
 submission_date: "2026-06-28"
 
 submission_path: "polyhire-redrob/"
-reproduce_command: "cd polyhire-redrob && python rank.py --candidates ./data/candidates.jsonl --out ./submission.csv"
+reproduce_command: "cd polyhire-redrob && python rank.py --candidates ./data/bharat/candidates.jsonl --out ./submission.csv"
 
 technical_details:
   architecture: "Phase A/B — offline embeddings + modular fusion ranker (CPU-only Phase B)"
